@@ -92,3 +92,4 @@ newb_stdzd = newb_stdzd.reshape(-1, 1)
 new_w = Linreg_sol(newA_stdzd, newb_stdzd).flatten()
 y = new_w * (x - new_mean[0]) * new_std[1] / new_std[0] + new_mean[1]
 plotSolution(new_w, x, y, "Line plot with outliers removed and standarized data:")
+
