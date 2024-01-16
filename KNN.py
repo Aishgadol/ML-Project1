@@ -72,7 +72,7 @@ def Mahalanobis(test, train):
     # Calculate the Mahalanobis distances
     for i in range(test.shape[0]):
         for j in range(train.shape[0]):
-            diff =  test[i] - data[j]
+            diff = test[i] - train[j]
             distances[i, j] = np.sqrt(np.dot(np.dot(diff, np.linalg.inv(covariance_matrix_data)), diff.T))
     return distances
 
@@ -95,21 +95,40 @@ def kNN_classify(train,labels,test,k,metric='Euclidian'):
 
 
 #testing
+def testAgainstScikit():
+    #metrics=['Euclidian','Manhattan','Mahalanobis']
+    metrics=['Euclidian','Manhattan']
+    # Apply kNN classification using your custom function
+    max=0
+    max_k=0
+    min=1
+    min_k=1
+    for k_value in range(7,25):
+        for metric in metrics:
+            predictions_custom = kNN_classify(X_train, y_train, X_test, k_value,metric=metric)
 
-metrics=['Euclidian','Manhattan','Mahalanobis']
-# Apply kNN classification using your custom function
-for k_value in range(1,10):
-    for metric in metrics:
-        predictions_custom = kNN_classify(X_train, y_train, X_test, k_value,metric=metric)
+            # Use scikit-learn's KNeighborsClassifier for comparison
+            knn_classifier = KNeighborsClassifier(n_neighbors=k_value)
+            knn_classifier.fit(X_train, y_train)
+            predictions_sklearn = knn_classifier.predict(X_test)
 
-        # Use scikit-learn's KNeighborsClassifier for comparison
-        knn_classifier = KNeighborsClassifier(n_neighbors=k_value)
-        knn_classifier.fit(X_train, y_train)
-        predictions_sklearn = knn_classifier.predict(X_test)
+            # Compare the results
+            accuracy_custom = accuracy_score(y_test, predictions_custom)
+            accuracy_sklearn = accuracy_score(y_test, predictions_sklearn)
+            if(accuracy_custom>max and k_value>max_k):
+                max=accuracy_custom
+                max_k=k_value
+                best_metric=metric
+            if(accuracy_custom<min):
+                min=accuracy_custom
+                min_k=k_value
+                worst_metric=metric
 
-        # Compare the results
-        accuracy_custom = accuracy_score(y_test, predictions_custom)
-        accuracy_sklearn = accuracy_score(y_test, predictions_sklearn)
-        print(f'k is: {k_value} , metric is: {metric}')
-        print(f'Accuracy using custom kNN function: {accuracy_custom:.7f}')
-        print(f'Accuracy using scikit-learn KNeighborsClassifier: {accuracy_sklearn:.7f}\n')
+            print(f'k is: {k_value} , metric is: {metric}')
+            print(f'Accuracy using custom kNN function: {accuracy_custom:.3f}')
+            print(f'Accuracy using scikit-learn KNeighborsClassifier: {accuracy_sklearn:.3f}\n')
+
+    print(f'Best k: {max_k}, best score: {max} , best metric: {best_metric}\n')
+    print(f'worst k: {min_k}, worst score: {min} , worst metric: {worst_metric}')
+
+testAgainstScikit()
