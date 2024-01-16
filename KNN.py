@@ -41,7 +41,7 @@ X_test=X_test.to_numpy()
 y_train=y_train.to_numpy()
 y_test=y_test.to_numpy()
 #this isnt the most efficient way, but its the most thorough approach
-def Euclidian(test,train):
+def Euclidean(test,train):
     distances=np.zeros((test.shape[0],train.shape[0]))
     #i represents each row (each sample in test)
     #j represnts each col (each sample in train)
@@ -78,7 +78,7 @@ def Mahalanobis(test, train):
 
 #here we will implmenet the KNN_classify function, returns array sized as the number of test samples
 #because we're going to classify each point in test set
-def kNN_classify(train,labels,test,k,metric='Euclidian'):
+def kNN_classify(train,labels,test,k,metric='Euclidean'):
     arguments = (test,train)
     distances = eval(f'{metric}(*arguments)')#returns np[][] |test| X |train| by the given metric.
     #counts will hold the predictions of k neighbors
@@ -94,28 +94,31 @@ def kNN_classify(train,labels,test,k,metric='Euclidian'):
     return results
 
 
+
 #testing
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
 def testAgainstScikit():
-    #metrics=['Euclidian','Manhattan','Mahalanobis']
-    metrics=['Euclidian','Manhattan']
-    # Apply kNN classification using your custom function
+    metrics=['Euclidean','Manhattan','Mahalanobis']
     max=0
     max_k=0
     min=1
     min_k=1
-    for k_value in range(7,25):
+    min_scikit=1
+    min_scikit_k=0
+    for k_value in range(7,43,2):
         for metric in metrics:
             predictions_custom = kNN_classify(X_train, y_train, X_test, k_value,metric=metric)
 
-            # Use scikit-learn's KNeighborsClassifier for comparison
+            #using scikit's KNN
             knn_classifier = KNeighborsClassifier(n_neighbors=k_value)
             knn_classifier.fit(X_train, y_train)
             predictions_sklearn = knn_classifier.predict(X_test)
 
-            # Compare the results
+            #comparing results
             accuracy_custom = accuracy_score(y_test, predictions_custom)
             accuracy_sklearn = accuracy_score(y_test, predictions_sklearn)
-            if(accuracy_custom>max and k_value>max_k):
+            if(accuracy_custom>max):
                 max=accuracy_custom
                 max_k=k_value
                 best_metric=metric
@@ -123,12 +126,52 @@ def testAgainstScikit():
                 min=accuracy_custom
                 min_k=k_value
                 worst_metric=metric
+            if(accuracy_sklearn<min_scikit):
+                min_scikit=accuracy_sklearn
+                min_scikit_k=k_value
 
+            #uncomment this section if you want to unleash hell
             print(f'k is: {k_value} , metric is: {metric}')
             print(f'Accuracy using custom kNN function: {accuracy_custom:.3f}')
             print(f'Accuracy using scikit-learn KNeighborsClassifier: {accuracy_sklearn:.3f}\n')
 
     print(f'Best k: {max_k}, best score: {max} , best metric: {best_metric}\n')
-    print(f'worst k: {min_k}, worst score: {min} , worst metric: {worst_metric}')
+    print(f'worst k: {min_k}, worst score: {min} , worst metric: {worst_metric}\n')
+    print(f'worst scikit accuracy was at k : {min_scikit_k} with accuracy: {min_scikit}')
 
 testAgainstScikit()
+
+'''
+in the following section we will plot the graph for each metric with different k values,
+this in order to see a graph of accuracies compared to k values and each metric
+'''
+def plotAccuracies():
+    metrics = ['Euclidean', 'Manhattan', 'Mahalanobis']
+    fig, axs = plt.subplots(3, 1, figsize=(8, 8))  # Change the layout to 3 rows and 1 column
+    max_accuracy=[]
+    max_ks=[]
+    for idx, metric in enumerate(metrics):
+        ks = np.arange(5, 46, 2)
+        accs = []
+        max_acc=0
+        max_k=0
+        for k in ks:
+            c = kNN_classify(X_train, y_train, X_test, k, metric)
+            hits = np.sum(c == y_test)
+            accuracy = hits / y_test.shape[0]
+            if(accuracy>max_acc):
+                max_acc=accuracy
+                max_k=k
+            accs.append(accuracy)
+
+        axs[idx].plot(ks, accs, color='red')
+        axs[idx].set_xlabel('k')
+        axs[idx].set_ylabel('accuracy')
+        axs[idx].set_title(f'{metric} , max accuracy: {max_acc:.3f}, best k: {max_k}')
+        axs[idx].set_xticks(ks)
+
+    plt.tight_layout()  # Adjust layout to prevent overlap
+    plt.show()
+
+plotAccuracies()
+
