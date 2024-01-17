@@ -106,7 +106,7 @@ def testAgainstScikit():
     min_k=1
     min_scikit=1
     min_scikit_k=0
-    for k_value in range(7,43,2):
+    for k_value in range(7,34,2):
         for metric in metrics:
             predictions_custom = kNN_classify(X_train, y_train, X_test, k_value,metric=metric)
 
@@ -172,6 +172,6 @@ def plotAccuracies():
 
     plt.tight_layout()  # Adjust layout to prevent overlap
     plt.show()
-
+#print("nothing")
 plotAccuracies()
 
