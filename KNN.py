@@ -163,7 +163,6 @@ def plotAccuracies():
                 max_acc=accuracy
                 max_k=k
             accs.append(accuracy)
-
         axs[idx].plot(ks, accs, color='red')
         axs[idx].set_xlabel('k')
         axs[idx].set_ylabel('accuracy')
