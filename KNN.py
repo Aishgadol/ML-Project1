@@ -172,6 +172,6 @@ def plotAccuracies():
 
     plt.tight_layout()  # Adjust layout to prevent overlap
     plt.show()
-#print("nothing")
+
 plotAccuracies()
 
