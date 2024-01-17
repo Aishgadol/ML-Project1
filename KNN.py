@@ -98,16 +98,20 @@ def kNN_classify(train,labels,test,k,metric='Euclidean'):
 #testing
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
+#testing
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
 def testAgainstScikit():
     metrics=['Euclidean','Manhattan','Mahalanobis']
-    max=0
-    max_k=0
+    max=[0,0,0]
+    max_k=[0,0,0]
     min=1
     min_k=1
     min_scikit=1
     min_scikit_k=0
-    for k_value in range(7,40,2):
-        for metric in metrics:
+    sk_misses=0
+    for k_value in range(7,100,2):
+        for index,metric in enumerate(metrics):
             predictions_custom = kNN_classify(X_train, y_train, X_test, k_value,metric=metric)
 
             #using scikit's KNN
@@ -118,11 +122,13 @@ def testAgainstScikit():
             #comparing results
             accuracy_custom = accuracy_score(y_test, predictions_custom)
             accuracy_sklearn = accuracy_score(y_test, predictions_sklearn)
-            if(accuracy_custom>max):
-                max=accuracy_custom
-                max_k=k_value
-                best_metric=metric
-            if(accuracy_custom<min):
+            if(index==0 and accuracy_custom != accuracy_sklearn):
+                sk_misses+=1
+            if(accuracy_custom>max[index]):
+                max[index]=accuracy_custom
+                max_k[index]=k_value
+                #best_metric=metric
+            if(accuracy_custom<min and index<2):
                 min=accuracy_custom
                 min_k=k_value
                 worst_metric=metric
@@ -130,14 +136,17 @@ def testAgainstScikit():
                 min_scikit=accuracy_sklearn
                 min_scikit_k=k_value
             '''
-            #uncomment this section if you want to unleash hell
+            uncomment this section if you want to unleash hell
             print(f'k is: {k_value} , metric is: {metric}')
             print(f'Accuracy using custom kNN function: {accuracy_custom:.3f}')
             print(f'Accuracy using scikit-learn KNeighborsClassifier: {accuracy_sklearn:.3f}\n')
             '''
-    print(f'Best k: {max_k}, best score: {max} , best metric: {best_metric}\n')
+    print(f'Euclidean:\nBest k: {max_k[0]}, best score: {max[0]}\n')
+    print(f'Manhattan:\nBest k: {max_k[1]}, best score: {max[1]}\n')
+    print(f'Mahalanobis:\nBest k: {max_k[2]}, best score: {max[2]}\n')
     print(f'worst k: {min_k}, worst score: {min} , worst metric: {worst_metric}\n')
     print(f'worst scikit accuracy was at k : {min_scikit_k} with accuracy: {min_scikit}')
+    print(f'\nnumber of misses in our functions compared to scikit knn: {sk_misses}')
 
 testAgainstScikit()
 
