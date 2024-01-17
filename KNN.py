@@ -106,7 +106,7 @@ def testAgainstScikit():
     min_k=1
     min_scikit=1
     min_scikit_k=0
-    for k_value in range(7,34,2):
+    for k_value in range(7,40,2):
         for metric in metrics:
             predictions_custom = kNN_classify(X_train, y_train, X_test, k_value,metric=metric)
 
@@ -129,12 +129,12 @@ def testAgainstScikit():
             if(accuracy_sklearn<min_scikit):
                 min_scikit=accuracy_sklearn
                 min_scikit_k=k_value
-
+            '''
             #uncomment this section if you want to unleash hell
             print(f'k is: {k_value} , metric is: {metric}')
             print(f'Accuracy using custom kNN function: {accuracy_custom:.3f}')
             print(f'Accuracy using scikit-learn KNeighborsClassifier: {accuracy_sklearn:.3f}\n')
-
+            '''
     print(f'Best k: {max_k}, best score: {max} , best metric: {best_metric}\n')
     print(f'worst k: {min_k}, worst score: {min} , worst metric: {worst_metric}\n')
     print(f'worst scikit accuracy was at k : {min_scikit_k} with accuracy: {min_scikit}')
