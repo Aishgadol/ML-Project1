@@ -13,6 +13,21 @@ def readTrainData(file_name):
     cat=set(lbAll)
     return texAll, lbAll, voc, cat
 
+
+#this is work in progress:
+def learn_NB_text():
+    # Implement here
+    documents,labels,voc,cat=readTrainData('https://sharon.srworkspace.com/ml/datasets/hw1/cyber_train.csv')
+    P=np.zeros(len(cat))
+    for index,category in enumerate(cat):
+        count=0
+        for label in labels:
+            if(category==label):
+                count+=1
+    P[index]=count/len(labels)
+    return Pw, P
+
+
 #testing
 docs,labels,voc,cat=readTrainData('https://sharon.srworkspace.com/ml/datasets/hw1/cyber_train.csv')
 P=np.zeros(len(cat))
