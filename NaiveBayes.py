@@ -33,4 +33,8 @@ for label in cat:
         if label==labels[row_index]:
             for word in row:
                 label_word_count[label][word]+=1
+#testing to see counting number of words per succeeded
 print(sum(len(row) for row in docs))
+for label in cat:
+    print(sum(label_word_count[label].values()))
+print(sum(label_word_count[label][word] for label in cat for word in voc))
