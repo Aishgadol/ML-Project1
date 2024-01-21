@@ -15,28 +15,22 @@ def readTrainData(file_name):
 
 def learn_NB_text():
     docs,labels,voc,cat=readTrainData('https://sharon.srworkspace.com/ml/datasets/hw1/cyber_train.csv')
-    laplace=0.2
-    d=len(cat)
-    priorDict={label:0 for label in cat}
+    laplace=0.35
+    priorDict={label:1.0 for label in cat}
+    for label in labels:
+        priorDict[label]+=1
     for category in cat:
-        count = sum(1 for label in labels if category == label)
-        priorDict[category] = count / len(labels)
+        priorDict[category] = priorDict[category] / len(labels)
     condDict={label:{word:laplace for word in voc} for label in cat}
-    words_in_cat={label:0 for label in cat} #in this part we are counting number of total words per category in cat
-    for category in cat:
-        for label_index,label in enumerate(labels):
-            if(category == label):
-                words_in_cat[label]+=len(docs[label_index])
+    words_in_cat={label:laplace*len(voc) for label in cat} #in this part we are counting number of total words per category in cat
     #here we will count number of appearnces of each word in each categoery
-    for label in cat:
-        for row_index,row in enumerate(docs):
-            if label==labels[row_index]:
-                for word in row:
-                    condDict[label][word]+=1
+    for row_index, row in enumerate(docs):
+        for word in row:
+            condDict[labels[row_index]][word]+=1
+            words_in_cat[labels[row_index]]+=1
     for label in cat:
         for word in voc:
-            condDict[label][word] = (condDict[label][word])/(words_in_cat[label]+laplace*d)
-
+            condDict[label][word] = (condDict[label][word])/(words_in_cat[label])
     return condDict,priorDict
 
 def ClassifyNB_test(condDict,priorDict):
@@ -66,8 +60,8 @@ def ClassifyNB_test(condDict,priorDict):
         if(bestLabel==testLabels[row_index]):
             hits+=1
     print(f' Succes rate: {hits/len(docs)}')
-    return
+    return hits/len(docs)
+
 
 condDict,priorDict=learn_NB_text()
 ClassifyNB_test(condDict,priorDict)
-
