@@ -52,5 +52,5 @@ for label in cat:
 #testing to see counting number of words per succeeded
 print(sum(len(row) for row in docs))
 for label in cat:
-    print(f' for label : {label}, total words per label:{sum(label_word_count[label].values())}')
+    print(f' for label  : {label}, total words per label:{sum(label_word_count[label].values())}')
 print(sum(label_word_count[label][word] for label in cat for word in voc))
