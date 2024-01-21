@@ -15,13 +15,13 @@ def readTrainData(file_name):
 
 def learn_NB_text():
     docs,labels,voc,cat=readTrainData('https://sharon.srworkspace.com/ml/datasets/hw1/cyber_train.csv')
-    laplace=1
+    laplace=0.2
     d=len(cat)
-    priorDict=np.zeros(len(cat))
-    for index, category in enumerate(cat):
+    priorDict={label:0 for label in cat}
+    for category in cat:
         count = sum(1 for label in labels if category == label)
-        priorDict[index] = count / len(labels)
-    condDict={label:{word:0 for word in voc} for label in cat}
+        priorDict[category] = count / len(labels)
+    condDict={label:{word:laplace for word in voc} for label in cat}
     words_in_cat={label:0 for label in cat} #in this part we are counting number of total words per category in cat
     for category in cat:
         for label_index,label in enumerate(labels):
@@ -35,24 +35,16 @@ def learn_NB_text():
                     condDict[label][word]+=1
     for label in cat:
         for word in voc:
-            condDict[label][word] = (condDict[label][word]+laplace)/(words_in_cat[label]+laplace*d)
+            condDict[label][word] = (condDict[label][word])/(words_in_cat[label]+laplace*d)
 
     return condDict,priorDict
-
-condDict,priorDict=learn_NB_text()
-print(condDict['earn']['hco'])
-for label in condDict.keys():
-    for word in condDict[label].keys():
-        condDict[label][word]=np.log(condDict[label][word])
-print(condDict['earn']['hco'])
 
 def ClassifyNB_test(condDict,priorDict):
     docs,testLabels, falseVoc,cat=readTrainData('https://sharon.srworkspace.com/ml/datasets/hw1/cyber_test.csv')
     for label in cat:
+        priorDict[label] = np.log(priorDict[label])
         for word in condDict[label]:
             condDict[label][word] = np.log(condDict[label][word])
-    for label in cat:
-        priorDict[label]=np.log(priorDict[label])
     #default probability in case test docs has words we didnt see in train docs
     default_prob=np.log(1.0/len(falseVoc))
     hits=0
@@ -65,4 +57,16 @@ def ClassifyNB_test(condDict,priorDict):
                 else:
                     probsPerRow[unique_cat]+=default_prob
             probsPerRow[unique_cat]+=priorDict[label]
+        bestLabel=""
+        maxProb=probsPerRow[testLabels[0]]
+        for label in cat:
+            if(probsPerRow[label]>maxProb):
+                bestLabel=label
+                maxProb=probsPerRow[label]
+        if(bestLabel==testLabels[row_index]):
+            hits+=1
+    print(f'Succes rate: {hits/len(docs)}')
+
+condDict,priorDict=learn_NB_text()
+ClassifyNB_test(condDict,priorDict)
 
