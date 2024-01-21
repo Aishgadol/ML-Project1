@@ -65,7 +65,7 @@ def ClassifyNB_test(condDict,priorDict):
                 maxProb=probsPerRow[label]
         if(bestLabel==testLabels[row_index]):
             hits+=1
-    print(f'Succes rate: {hits/len(docs)}')
+    print(f' Succes rate: {hits/len(docs)}')
     return
 
 condDict,priorDict=learn_NB_text()
