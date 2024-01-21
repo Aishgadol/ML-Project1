@@ -1,8 +1,6 @@
 import numpy as np
 import pandas as pd
-import math
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.model_selection import train_test_split
+
 def readTrainData(file_name):
     df=pd.read_csv(file_name,header=None)
     tempTxt=df.drop(0,axis=1).to_numpy()
