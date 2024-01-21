@@ -60,5 +60,5 @@ def ClassifyNB_test(condDict,priorDict):
     print(f' Succes rate: {hits/len(docs)}')
     return hits/len(docs)
 
-condDict,priorDict=learn_NB_text()
+condDict,priorDict = learn_NB_text()
 ClassifyNB_test(condDict,priorDict)
