@@ -13,44 +13,56 @@ def readTrainData(file_name):
     cat=set(lbAll)
     return texAll, lbAll, voc, cat
 
-
-#this is work in progress:
 def learn_NB_text():
-    # Implement here
-    documents,labels,voc,cat=readTrainData('https://sharon.srworkspace.com/ml/datasets/hw1/cyber_train.csv')
-    P=np.zeros(len(cat))
-    for index,category in enumerate(cat):
-        count=0
-        for label in labels:
-            if(category==label):
-                count+=1
-    P[index]=count/len(labels)
-    return Pw, P
+    docs,labels,voc,cat=readTrainData('https://sharon.srworkspace.com/ml/datasets/hw1/cyber_train.csv')
+    laplace=1
+    d=len(cat)
+    priorDict=np.zeros(len(cat))
+    for index, category in enumerate(cat):
+        count = sum(1 for label in labels if category == label)
+        priorDict[index] = count / len(labels)
+    condDict={label:{word:0 for word in voc} for label in cat}
+    words_in_cat={label:0 for label in cat} #in this part we are counting number of total words per category in cat
+    for category in cat:
+        for label_index,label in enumerate(labels):
+            if(category == label):
+                words_in_cat[label]+=len(docs[label_index])
+    #here we will count number of appearnces of each word in each categoery
+    for label in cat:
+        for row_index,row in enumerate(docs):
+            if label==labels[row_index]:
+                for word in row:
+                    condDict[label][word]+=1
+    for label in cat:
+        for word in voc:
+            condDict[label][word] = (condDict[label][word]+laplace)/(words_in_cat[label]+laplace*d)
 
+    return condDict,priorDict
 
-#testing
-docs,labels,voc,cat=readTrainData('https://sharon.srworkspace.com/ml/datasets/hw1/cyber_train.csv')
-P=np.zeros(len(cat))
-for index, category in enumerate(cat):
-    count = sum(1 for label in labels if category == label)
-    P[index] = count / len(labels)
-Pw=np.zeros((len(cat),len(voc)))
-label_word_count={label:{word:0 for word in voc} for label in cat}
-wordsInCat=np.zeros(len(cat))
-#in this part we are counting number of total words per category in cat
-for index, category in enumerate(cat):
-    for label_index,label in enumerate(labels):
-        if(category == label):
-            wordsInCat[index]+=len(docs[label_index])
-#here we will count number of appearnces of each word in each categoery
-for label in cat:
+condDict,priorDict=learn_NB_text()
+print(condDict['earn']['hco'])
+for label in condDict.keys():
+    for word in condDict[label].keys():
+        condDict[label][word]=np.log(condDict[label][word])
+print(condDict['earn']['hco'])
+
+def ClassifyNB_test(condDict,priorDict):
+    docs,testLabels, falseVoc,cat=readTrainData('https://sharon.srworkspace.com/ml/datasets/hw1/cyber_test.csv')
+    for label in cat:
+        for word in condDict[label]:
+            condDict[label][word] = np.log(condDict[label][word])
+    for label in cat:
+        priorDict[label]=np.log(priorDict[label])
+    #default probability in case test docs has words we didnt see in train docs
+    default_prob=np.log(1.0/len(falseVoc))
+    hits=0
     for row_index,row in enumerate(docs):
-        if label==labels[row_index]:
+        probsPerRow={label:0 for label in cat}
+        for unique_cat in cat:
             for word in row:
-                label_word_count[label][word]+=1
+                if(word in condDict[unique_cat]):
+                    probsPerRow[unique_cat]+=condDict[unique_cat][word]
+                else:
+                    probsPerRow[unique_cat]+=default_prob
+            probsPerRow[unique_cat]+=priorDict[label]
 
-#testing to see counting number of words per succeeded
-print(sum(len(row) for row in docs))
-for label in cat:
-    print(f' for label : {label}, total words per label:{sum(label_word_count[label].values())}')
-print(sum(label_word_count[label][word] for label in cat for word in voc))
