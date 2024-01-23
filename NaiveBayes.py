@@ -9,7 +9,7 @@ def readTrainData(file_name):
     lbAll=[lbl for lbl in df[0]]
     voc=set(voc)
     cat=set(lbAll)
-    return texAll, lbAll, voc, cat
+    return texAll, lbAll, sorted(voc), sorted(cat)
 
 def learn_NB_text():
     docs,labels,voc,cat=readTrainData('https://sharon.srworkspace.com/ml/datasets/hw1/cyber_train.csv')
