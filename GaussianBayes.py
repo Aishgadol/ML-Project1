@@ -11,7 +11,6 @@ def plotDensities():
     df.plot(kind='density', subplots=True, layout=(4, 4), figsize=(18, 15), sharex=False)
     plt.show()
 
-
 data=df.drop('Class',axis=1).to_numpy()
 labels=df['Class'].to_numpy()
 X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, random_state=25)
