@@ -26,9 +26,31 @@ test_means={label :np.mean(samples_in_class[label],axis=0)  for label in cat}
 for i in cat:
     print(means[i]-test_means[i])
 #normal covariance, not naive
-class_covariance={label:np.cov(samples_in_class[label]) for label in cat}
+class_cov={label:np.cov(samples_in_class[label],rowvar=False) for label in cat}
 
 #naive gaus 'covariance' (diagonal of variances)
-naive_cov={label: np.diag(np.var(samples_in_class[label], axis=1))for label in cat}
+naive_cov={label: np.diag(np.var(samples_in_class[label], axis=0))for label in cat}
+
+for label in cat:
+    print(class_cov[label])
+'''
+def classify_point_gaussian_bayes(x):
+  prob_per_class = {label: -0.5 * ((x - means[label]).T) for label in cat}
 
 
+def classify_point_gaussian_naive_bayes(x):
+
+'''
+
+def plotCov():
+    cmap=plt.get_cmap('coolwarm')
+    fig, axs = plt.subplots(len(cat), 1, figsize=(6, 4 * len(cat)))
+    for label in cat:
+        axs[label-1].imshow(naive_cov[label], cmap=cmap, interpolation='nearest',vmin=-1, vmax=1)
+        axs[label-1].set_title(f'Covariance Matrix - Label {label}')
+        axs[label-1].axis('off')
+
+    plt.tight_layout()
+    plt.show()
+
+plotCov()
