@@ -46,7 +46,7 @@ def plotCov():
     cmap=plt.get_cmap('coolwarm')
     fig, axs = plt.subplots(len(cat), 1, figsize=(6, 4 * len(cat)))
     for label in cat:
-        axs[label-1].imshow(naive_cov[label], cmap=cmap, interpolation='nearest',vmin=-1, vmax=1)
+        axs[label-1].imshow(class_cov[label], cmap=cmap, interpolation='nearest',vmin=-1, vmax=1)
         axs[label-1].set_title(f'Covariance Matrix - Label {label}')
         axs[label-1].axis('off')
 
