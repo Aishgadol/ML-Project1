@@ -39,11 +39,12 @@ def classify_point_gaussian_naive_bayes(x):
                              - 0.5 * np.log(np.linalg.det(naive_cov[label])) + np.log(priors[label - 1]) for label in cat}
     return max(prob_per_class, key=prob_per_class.get)
 
+#testing the gaussian bayes function
 res = []
 for idx, test_point in enumerate(X_test):
   res.append(classify_point_gaussian_bayes(test_point) == y_test[idx])
 print(f'Test accuracy for gaussian bayes is {res.count(True)/len(res)}')
-
+#testing the gaussian naive bayes function
 res = []
 for idx, test_point in enumerate(X_test):
   res.append(classify_point_gaussian_naive_bayes(test_point) == y_test[idx])
@@ -63,3 +64,5 @@ def plotCov():
 
 plotCov()
 '''
+
+#scaling the data with StandardScaler
