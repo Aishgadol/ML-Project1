@@ -21,7 +21,6 @@ means={label :np.zeros((len(data[0]))) for label in cat}
 for label in cat:
     means[label]=np.mean(samples_in_class[label],axis=0)
 
-test_means={label :np.mean(samples_in_class[label],axis=0)  for label in cat}
 #normal covariance, not naive
 class_cov={label:np.cov(samples_in_class[label],rowvar=False) for label in cat}
 
