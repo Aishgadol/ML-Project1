@@ -31,25 +31,26 @@ naive_cov={label: np.diag(np.var(samples_in_class[label], axis=0))for label in c
 
 
 def classify_point_gaussian_bayes(x):
-  prob_per_class = {label: -0.5 * ((x - means[label]).T @ class_cov[label] @ (x-means[label])) - 0.5 * np.log(
+    #prob_per_class={label: np.log((1.0 / np.sqrt(((2 * np.pi) ** len(x)) * np.linalg.det(class_cov[label])))*np.exp(-0.5 * ((x-means[label]).T) @ np.linalg.inv(class_cov[label]) @ (x-means[label]))) for label in cat}
+    prob_per_class = {label: -0.5 * ((x - means[label]).T @ np.linalg.inv(class_cov[label]) @ (x-means[label])) - 0.5 * np.log(
       np.linalg.det(class_cov[label])) + np.log(priors[label-1]) for label in cat}
-  return max(prob_per_class,key=prob_per_class.get)
+    return max(prob_per_class,key=prob_per_class.get)
 
 def classify_point_gaussian_naive_bayes(x):
-    prob_per_class = {label: -0.5 * ((x - means[label]).T @ class_cov[label] @ (x - means[label])) - 0.5 * np.log(
+    prob_per_class = {label: -0.5 * ((x - means[label]).T @ np.linalg.inv(class_cov[label]) @ (x - means[label])) - 0.5 * np.log(
         np.linalg.det(naive_cov[label])) + np.log(priors[label - 1]) for label in cat}
     return max(prob_per_class, key=prob_per_class.get)
-
 
 res = []
 for idx, test_point in enumerate(X_test):
   res.append(classify_point_gaussian_bayes(test_point) == y_test[idx])
 print(f'Test accuracy for gaussian bayes is {res.count(True)/len(res)}')
+
 res = []
 for idx, test_point in enumerate(X_test):
   res.append(classify_point_gaussian_naive_bayes(test_point) == y_test[idx])
 print(f'Test accuracy for gaussian naive bayes is {res.count(True)/len(res)}')
-
+'''
 def plotCov():
     cmap=plt.get_cmap('coolwarm')
     fig, axs = plt.subplots(len(cat), 1, figsize=(6, 4 * len(cat)))
@@ -63,3 +64,4 @@ def plotCov():
 
 
 plotCov()
+'''
