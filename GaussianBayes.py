@@ -29,6 +29,7 @@ cat=set(labels)
 #train test split
 X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, random_state=25)
 # counting and calculating priors
+
 priors=np.bincount(y_train)[1:]/len(y_train)
 means=getMeansDict(X_train)
 #normal covariance, not naive
@@ -46,7 +47,7 @@ def classify_point_gaussian_naive_bayes(x):
     prob_per_class = {label: -0.5 * ((x - means[label]).T @ np.linalg.inv(naive_cov[label]) @ (x - means[label]))
                              - 0.5 * np.log(np.linalg.det(naive_cov[label])) + np.log(priors[label - 1]) for label in cat}
     return max(prob_per_class, key=prob_per_class.get)
-
+print("Unscaled data:\n")
 #testing the gaussian bayes function
 res = []
 for idx, test_point in enumerate(X_test):
@@ -79,3 +80,16 @@ std_scaler=StandardScaler()
 std_scaler.fit(X_train)
 X_train_std=std_scaler.transform(X_train)
 X_test_std=std_scaler.transform(X_test)
+print("Scaled data:\n")
+means=getMeansDict(X_train_std)
+class_cov=getCovsDict(X_train_std)
+naive_cov=getVarsDiagDict(X_train_std)
+res = []
+for idx, test_point in enumerate(X_test_std):
+  res.append(classify_point_gaussian_bayes(test_point) == y_test[idx])
+print(f'Test accuracy for gaussian bayes is {res.count(True)/len(res)}')
+
+res = []
+for idx, test_point in enumerate(X_test_std):
+  res.append(classify_point_gaussian_naive_bayes(test_point) == y_test[idx])
+print(f'Test accuracy for gaussian naive bayes is {res.count(True)/len(res)}')
