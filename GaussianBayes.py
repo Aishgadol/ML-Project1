@@ -47,17 +47,21 @@ def classify_point_gaussian_naive_bayes(x):
     prob_per_class = {label: -0.5 * ((x - means[label]).T @ np.linalg.inv(naive_cov[label]) @ (x - means[label]))
                              - 0.5 * np.log(np.linalg.det(naive_cov[label])) + np.log(priors[label - 1]) for label in cat}
     return max(prob_per_class, key=prob_per_class.get)
-print("Unscaled data:\n")
+print("Unscaled data:")
 #testing the gaussian bayes function
-res = []
-for idx, test_point in enumerate(X_test):
-  res.append(classify_point_gaussian_bayes(test_point) == y_test[idx])
-print(f'Test accuracy for gaussian bayes is {res.count(True)/len(res)}')
-#testing the gaussian naive bayes function
-res = []
-for idx, test_point in enumerate(X_test):
-  res.append(classify_point_gaussian_naive_bayes(test_point) == y_test[idx])
-print(f'Test accuracy for gaussian naive bayes is {res.count(True)/len(res)}')
+def testClassifiers(test_data):
+    res = []
+    for idx, test_point in enumerate(test_data):
+      res.append(classify_point_gaussian_bayes(test_point) == y_test[idx])
+    print(f'Test accuracy for gaussian bayes is {res.count(True)/len(res)}')
+    #testing the gaussian naive bayes function
+    res = []
+    for idx, test_point in enumerate(test_data):
+      res.append(classify_point_gaussian_naive_bayes(test_point) == y_test[idx])
+    print(f'Test accuracy for gaussian naive bayes is {res.count(True)/len(res)}')
+
+testClassifiers(X_test)
+
 '''
 def plotCov():
     cmap=plt.get_cmap('coolwarm')
@@ -73,6 +77,7 @@ def plotCov():
 
 plotCov()
 '''
+print(f'\nTesting scaled data but with same means,covs, and variance as original data:')
 
 #scaling the data with StandardScaler
 from sklearn.preprocessing import StandardScaler
@@ -80,16 +85,9 @@ std_scaler=StandardScaler()
 std_scaler.fit(X_train)
 X_train_std=std_scaler.transform(X_train)
 X_test_std=std_scaler.transform(X_test)
-print("Scaled data:\n")
+testClassifiers(X_test_std)
+print("\ntesting scaled data but with updated (after scaling) means,covs, variances:")
 means=getMeansDict(X_train_std)
 class_cov=getCovsDict(X_train_std)
 naive_cov=getVarsDiagDict(X_train_std)
-res = []
-for idx, test_point in enumerate(X_test_std):
-  res.append(classify_point_gaussian_bayes(test_point) == y_test[idx])
-print(f'Test accuracy for gaussian bayes is {res.count(True)/len(res)}')
-
-res = []
-for idx, test_point in enumerate(X_test_std):
-  res.append(classify_point_gaussian_naive_bayes(test_point) == y_test[idx])
-print(f'Test accuracy for gaussian naive bayes is {res.count(True)/len(res)}')
+testClassifiers(X_test_std)
