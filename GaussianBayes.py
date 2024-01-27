@@ -7,6 +7,17 @@ df=pd.read_csv('https://sharon.srworkspace.com/ml/datasets/hw1/wine.data.csv')
 #print(df.shape)
 #df.head(5)
 
+def getMeansDict(data):
+    samples_in_class={label : data[y_train==label] for label in cat}
+    return {label:np.mean(samples_in_class[label],axis=0) for label in cat}
+def getCovsDict(data):
+    samples_in_class={label : data[y_train==label] for label in cat}
+    return {label:np.cov(samples_in_class[label],rowvar=False) for label in cat}
+def getVarsDiagDict(data):
+    samples_in_class={label : data[y_train==label] for label in cat}
+    return {label : np.diag(np.var(samples_in_class[label],axis=0)) for label in cat}
+
+
 
 def plotDensities():
     df.plot(kind='density', subplots=True, layout=(4, 4), figsize=(18, 15), sharex=False)
@@ -19,17 +30,12 @@ cat=set(labels)
 X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, random_state=25)
 # counting and calculating priors
 priors=np.bincount(y_train)[1:]/len(y_train)
-samples_in_class={label : X_train[y_train==label] for label in cat}
-means={label :np.zeros((len(data[0]))) for label in cat}
-for label in cat:
-    means[label]=np.mean(samples_in_class[label],axis=0)
-
+means=getMeansDict(X_train)
 #normal covariance, not naive
-class_cov={label:np.cov(samples_in_class[label],rowvar=False) for label in cat}
+class_cov=getCovsDict(X_train)
 
 #naive gaus 'covariance' (diagonal of variances)
-naive_cov={label: np.diag(np.var(samples_in_class[label], axis=0))for label in cat}
-
+naive_cov=getVarsDiagDict(X_train)
 def classify_point_gaussian_bayes(x):
     prob_per_class = {label: -0.5 * ((x - means[label]).T @ np.linalg.inv(class_cov[label]) @ (x-means[label]))
                              - 0.5 * np.log(
