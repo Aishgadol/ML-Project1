@@ -28,7 +28,6 @@ class_cov={label:np.cov(samples_in_class[label],rowvar=False) for label in cat}
 #naive gaus 'covariance' (diagonal of variances)
 naive_cov={label: np.diag(np.var(samples_in_class[label], axis=0))for label in cat}
 
-
 def classify_point_gaussian_bayes(x):
     prob_per_class = {label: -0.5 * ((x - means[label]).T @ np.linalg.inv(class_cov[label]) @ (x-means[label]))
                              - 0.5 * np.log(
