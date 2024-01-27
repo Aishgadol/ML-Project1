@@ -68,3 +68,8 @@ plotCov()
 '''
 
 #scaling the data with StandardScaler
+from sklearn.preprocessing import StandardScaler
+std_scaler=StandardScaler()
+std_scaler.fit(X_train)
+X_train_std=std_scaler.transform(X_train)
+X_test_std=std_scaler.transform(X_test)
