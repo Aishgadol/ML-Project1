@@ -14,7 +14,7 @@ def readTrainData(file_name):
 def learn_NB_text():
     docs,labels,voc,cat=readTrainData('https://sharon.srworkspace.com/ml/datasets/hw1/cyber_train.csv')
     laplace=0.35
-    priorDict={label:1.0 for label in cat}
+    priorDict={label:0.0 for label in cat}
     for label in labels:
         priorDict[label]+=1
     for category in cat:
