@@ -11,10 +11,13 @@ df=pd.read_csv('https://sharon.srworkspace.com/ml/datasets/hw1/wine.data.csv')
 def plotDensities():
     df.plot(kind='density', subplots=True, layout=(4, 4), figsize=(18, 15), sharex=False)
     plt.show()
+#seperating dataframe to data and labels
 data=df.drop('Class',axis=1).to_numpy()
 labels=df['Class'].to_numpy()
 cat=set(labels)
+#train test split
 X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, random_state=25)
+# counting and calculating priors
 priors=np.bincount(y_train)[1:]/len(y_train)
 samples_in_class={label : X_train[y_train==label] for label in cat}
 means={label :np.zeros((len(data[0]))) for label in cat}
