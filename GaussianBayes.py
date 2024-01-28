@@ -77,6 +77,7 @@ def plotCov():
 
 plotCov()
 '''
+
 print(f'\nTesting scaled data but with same means,covs, and variance as original data:')
 #scaling the data with StandardScaler
 from sklearn.preprocessing import StandardScaler
