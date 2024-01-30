@@ -31,6 +31,7 @@ def learn_NB_text():
             condDict[label][word] = (condDict[label][word])/(words_in_cat[label])
     return condDict,priorDict
 
+
 def ClassifyNB_test(condDict,priorDict):
     docs,testLabels, falseVoc,cat=readTrainData('https://sharon.srworkspace.com/ml/datasets/hw1/cyber_test.csv')
     for label in cat:
