@@ -12,8 +12,7 @@ NASA gave us dataset (tutor is nasa appearntly), including temperature,color, sp
 we aim to compare difference metric to dtermine which one is best for this data
 '''
 #load data and printing first 3 rows
-url="https://sharon.srworkspace.com/ml/datasets/hw1/Stars.csv"
-data=pd.read_csv(url,sep=",")
+data=pd.read_csv("stars.csv",sep=",")
 data=data.dropna()
 #print(data.head(3))
 
