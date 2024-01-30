@@ -25,6 +25,7 @@ def plotDensities():
 #seperating dataframe to data and labels
 data=df.drop('Class',axis=1).to_numpy()
 labels=df['Class'].to_numpy()
+#cat=categories
 cat=set(labels)
 #train test split
 X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, random_state=25)
