@@ -30,7 +30,6 @@ cat=set(labels)
 #train test split
 X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, random_state=25)
 # counting and calculating priors
-
 priors=np.bincount(y_train)[1:]/len(y_train)
 means=getMeansDict(X_train)
 #normal covariance, not naive
