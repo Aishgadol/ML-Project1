@@ -153,6 +153,7 @@ testAgainstScikit()
 in the following section we will plot the graph for each metric with different k values,
 this in order to see a graph of accuracies compared to k values and each metric
 '''
+
 def plotAccuracies():
     metrics = ['Euclidean', 'Manhattan', 'Mahalanobis']
     fig, axs = plt.subplots(3, 1, figsize=(8, 8))  # Change the layout to 3 rows and 1 column
