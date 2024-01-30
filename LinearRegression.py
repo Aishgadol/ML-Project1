@@ -30,7 +30,6 @@ def plotSolution(w, x, y, headline):
     plt.scatter(data[:, 0], data[:, 1], color='blue', label='Data')
     plt.show()
 
-
 '''
 Here we split the data to A,b
 we also center data to mean zero, by removing the mean of A from A and removing the mean of b from b
