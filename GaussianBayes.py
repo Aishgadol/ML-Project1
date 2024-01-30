@@ -3,9 +3,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
-df=pd.read_csv('https://sharon.srworkspace.com/ml/datasets/hw1/wine.data.csv')
+df=pd.read_csv('wine_data.csv')
 #print(df.shape)
 #df.head(5)
+
 
 def getMeansDict(data):
     samples_in_class={label : data[y_train==label] for label in cat}
@@ -86,6 +87,7 @@ std_scaler.fit(X_train)
 X_train_std=std_scaler.transform(X_train)
 X_test_std=std_scaler.transform(X_test)
 testClassifiers(X_test_std)
+
 print("\ntesting scaled data but with updated (after scaling) means,covs, variances:")
 means=getMeansDict(X_train_std)
 class_cov=getCovsDict(X_train_std)

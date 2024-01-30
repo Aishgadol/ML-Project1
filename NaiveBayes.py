@@ -12,7 +12,7 @@ def readTrainData(file_name):
     return texAll, lbAll, sorted(voc), sorted(cat)
 
 def learn_NB_text():
-    docs,labels,voc,cat=readTrainData('https://sharon.srworkspace.com/ml/datasets/hw1/cyber_train.csv')
+    docs,labels,voc,cat=readTrainData('cyber_train.csv')
     laplace=0.35
     priorDict={label:0.0 for label in cat}
     for label in labels:
@@ -33,7 +33,7 @@ def learn_NB_text():
 
 
 def ClassifyNB_test(condDict,priorDict):
-    docs,testLabels, falseVoc,cat=readTrainData('https://sharon.srworkspace.com/ml/datasets/hw1/cyber_test.csv')
+    docs,testLabels, falseVoc,cat=readTrainData('cyber_test.csv')
     for label in cat:
         priorDict[label] = np.log(priorDict[label])
         for word in condDict[label]:
@@ -42,7 +42,7 @@ def ClassifyNB_test(condDict,priorDict):
     default_prob=np.log(1.0/len(falseVoc))
     hits=0
     for row_index,row in enumerate(docs):
-        probsPerRow={label:0 for label in cat}
+        probsPerRow={label:0.0 for label in cat}
         for unique_cat in cat:
             for word in row:
                 if(word in condDict[unique_cat]):
